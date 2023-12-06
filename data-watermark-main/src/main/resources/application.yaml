@@ -1,0 +1,59 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-request-size: -1
+      max-file-size: -1
+conf:
+  path: ${CONFIG_PATH:classpath:static/config.json}
+  property: ${PROPERTY_PATH:/workspace/szs/dw/persistence.properties}
+  mappingRoot: ${MAPPING_ROOT:/workspace/szs/dw/mapping/file}
+  selectedTables: ${SELECTED_TABLES:/workspace/szs/dw/mapping/tabs}
+  csvMappingRoot: ${CSV_MAPPING_ROOT:/workspace/szs/dw/mapping/csv}
+  tmpRoot: ${TMP_ROOT:/workspace/szs/dw/tmp}
+  fileRoot: ${FILE_ROOT:/workspace/szs/dw/file}
+  dwThreshold: ${DW_THRESHOLD:0.7}
+  forgeRowNumThreshold: ${FORGE_ROW_NUM_THRESHOLD:0.01}
+  rowCapacityLimit: ${ROW_CAPACITY_LIMIT:-1}
+  mock:
+    useMock: ${USE_MOCK:1}
+    mockAddress: ${MOCK_ADDR_CONFIG:classpath:static/conf/addr.json}
+  algs:
+    patternSearch: ${PS_CONF_PATH:classpath:static/conf/pattern_search.json}
+
+reloadDuration: "0 0/1 * * * ?"
+
+---
+spring:
+  datasource:
+    username: root
+    password: jiaze1234
+    url: jdbc:mysql://mysqldb/dw?zeroDateTimeBehavior=convertToNull&characterEncoding=utf8&charset=utf8&parseTime=True&loc=Local
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 10
+      max-lifetime: 30000 #30s
+  profiles:
+    active: docker
+
+---
+spring:
+  datasource:
+    username: root
+    password: jiaze1234
+    url: jdbc:mysql://localhost:3306/dw?zeroDateTimeBehavior=convertToNull&characterEncoding=utf8&charset=utf8&parseTime=True&loc=Local
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 10
+      max-lifetime: 30000 #30s
+  profiles:
+    active: dev
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG

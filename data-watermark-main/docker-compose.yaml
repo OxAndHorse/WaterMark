@@ -1,0 +1,59 @@
+version: "3"
+
+volumes:
+  files:
+    driver: local
+  mysql:
+    driver: local
+
+services:
+  watermark:
+    image: data-watermark-service:0.1
+    container_name: data-watermark-service
+    restart: always
+    ports:
+      - "30180:8080"
+    depends_on:
+      - mysqldb
+    environment:
+      - MAPPING_ROOT=/root/dw/mapping/dw
+      - SELECTED_TABLES=/root/dw/mapping/tabs
+      - CSV_MAPPING_ROOT=/root/dw/mapping/csv
+      - TMP_ROOT=/root/tmp
+      - FILE_ROOT=/root/dw/file
+      - PROPERTY_PATH=/root/dw/static/persistence.properties
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb/dw?zeroDateTimeBehavior=convertToNull&characterEncoding=utf8&charset=utf8&parseTime=True&loc=Local
+      - TZ="Asia/Shanghai"
+    volumes:
+      - files:/root/dw
+
+  mysqldb:
+    image: mysql:dws
+    container_name: dws-db
+    restart: always
+    ports:
+      - "33061:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=ZJ2IvCQf71bs
+      - MYSQL_USER=pkc
+      - MYSQL_PASSWORD=pkcgroup2@23
+      - MYSQL_DATABASE=dw
+    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=ZJ2IvCQf71bs"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - mysql:/var/lib/mysql
+
+  dwsfront:
+    image: dwsfront:0.1
+    container_name: dwsfront-service
+    restart: always
+    ports:
+      - "30280:80"
+    volumes:
+      - /workspace/szs/nginx/default.conf:/etc/nginx/conf.d/default.conf
+

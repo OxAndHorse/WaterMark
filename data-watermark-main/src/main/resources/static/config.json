@@ -1,0 +1,10 @@
+{
+  "configs": [
+    {
+      "belongDep": "pkc",
+      "dbName": "dw",
+      "tableName": "test_data"
+    }
+  ],
+  "tmpRoot": "/Users/songzishuai/Projects/Java/tmp/"
+}

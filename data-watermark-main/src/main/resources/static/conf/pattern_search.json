@@ -1,0 +1,10 @@
+{
+  "precision": 0.001,
+  "decayRate": 0.95,
+  "accurate": 0,
+  "turnNum": 100,
+  "alpha": 8,
+  "exp": -0.00001,
+  "upper": 5,
+  "lower": -5
+}
